@@ -35,8 +35,6 @@ class ServerVK
             } else {
                 $this->getServer();
             }
-        } catch (\Throwable $th) {
-            return (new WriterLogs())->writeErrorLog($th, "ServerVK.php -> connection()");
         }
     }
 
