@@ -2,9 +2,9 @@
 
 namespace vkbot_conversation\classes;
 
-use vkbot_conversation\classes\bot\Command;
+use vkbot_conversation\classes\bot\BotCommands;
 use vkbot_conversation\classes\message\MessageEvent;
-use vkbot_conversation\classes\ServerVK;
+use vkbot_conversation\classes\server\ServerVK;
 
 class Event
 {
@@ -27,7 +27,7 @@ class Event
         if ($text) {
             if (stripos($text, "/") !== false && stripos($text, ServerVK::$nameBotStatic) !== false) {
                 $command = substr($text, stripos($text, "/"));
-                if (in_array($command, Command::$commands))
+                if (in_array($command, BotCommands::$commandsName))
                     return true;
                 else
                     return false;
@@ -37,9 +37,23 @@ class Event
             return false;
     }
 
-    private function getCommand(string $text): string
+    private function getCommand(string $text): ?string
     {
-        return substr($text, stripos($text, "/"));
+        $isCommand =  substr($text, stripos($text, "/"));
+        if (in_array($isCommand, BotCommands::$commandsName)) {
+            $fullCommand = false;
+            foreach (BotCommands::$commandsName as $command) {
+                if ($command === $isCommand) {
+                    $isCommand = $command;
+                    $fullCommand = true;
+                }
+            }
+            if ($fullCommand)
+                return $isCommand;
+            else
+                return null;
+        } else
+            return null;
     }
 
     private function isChatEvent(MessageEvent $message): bool
@@ -50,18 +64,18 @@ class Event
             return false;
     }
 
-    public function runBot()
-    {
+    public function runEvent()
+    {   
+        print_r($this->eventData);
         switch ($this->typeEvent) {
             case Event::TYPE_MESSAGE_FOR_BOT:
-                Command::runBotCommand($this->getCommand($this->eventData->getText()));
+                $command = $this->getCommand($this->eventData->getText());
+                if ($command)
+                    BotCommands::runBotCommand($this->eventData, $command);
                 break;
             case Event::TYPE_CHAT_EVENT:
-                Command::runBotChatEvent();
+                BotCommands::runBotChatEvent($this->eventData);
                 break;
-            default:
-                echo "unknown type event";
         }
-        print_r($this->eventData);
     }
 }

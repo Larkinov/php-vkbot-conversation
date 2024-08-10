@@ -1,25 +1,27 @@
 <?php
 
-namespace vkbot_conversation\classes;
+namespace vkbot_conversation\classes\server;
 
-use vkbot_conversation\classes\data\ServerData;
+use vkbot_conversation\classes\server\ServerData;
 use vkbot_conversation\classes\message\Action;
 use vkbot_conversation\classes\message\MessageEvent;
 use vkbot_conversation\utils\Converter;
+
+require_once(__DIR__."/../../Config.php");
 
 class ServerVK
 {
 
     private ServerData $data;
     private string $wait = "25";
+
     // private string $mode = "2";
     // private string $version = "3";
+
+
     static string $nameBotStatic;
 
     public function __construct(
-        private string $token,
-        private string $version,
-        private string $groupId,
         string $storagePathCache,
         string $filename,
         private string $nameBot
@@ -38,9 +40,9 @@ class ServerVK
     private function getServer()
     {
         $request_params = [
-            'access_token' => $this->token,
-            'group_id' => $this->groupId,
-            'v' => $this->version
+            'access_token' => TOKEN_VK_CONVERSATION,
+            'group_id' => GROUP_VK_CONVERSATION,
+            'v' => VERSION_VK_CONVERSATION
         ];
 
         $request_url = 'https://api.vk.com/method/groups.getLongPollServer?' . http_build_query($request_params);
@@ -115,8 +117,6 @@ class ServerVK
                 }
             }
         }
-
-        echo "<br><br>";
         return $messages;
     }
 }

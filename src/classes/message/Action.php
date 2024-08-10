@@ -5,7 +5,7 @@ namespace vkbot_conversation\classes\message;
 class Action
 {
 
-    const ACTION_PHOTO_UPDATE = "CHAT_PHOTO_UPDATE";
+    public const ACTION_PHOTO_UPDATE = "CHAT_PHOTO_UPDATE";
     const ACTION_PHOTO_REMOVE = "CHAT_PHOTO_REMOVE";
     const ACTION_CREATE = "CHAT_CREATE";
     const ACTION_TITLE_UPDATE = "CHAT_TITLE_UPDATE";

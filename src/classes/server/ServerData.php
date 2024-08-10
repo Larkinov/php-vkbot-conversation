@@ -1,6 +1,6 @@
 <?php
 
-namespace vkbot_conversation\classes\data;
+namespace vkbot_conversation\classes\server;
 
 use vkbot_conversation\models\DataModel;
 
