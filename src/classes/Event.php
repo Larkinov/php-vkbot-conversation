@@ -4,7 +4,8 @@ namespace vkbot_conversation\classes;
 
 use vkbot_conversation\classes\bot\BotCommands;
 use vkbot_conversation\classes\message\MessageEvent;
-use vkbot_conversation\classes\server\ServerVK;
+
+require_once(__DIR__."/../Config.php");
 
 class Event
 {
@@ -13,7 +14,7 @@ class Event
 
     private string|null $typeEvent = null;
 
-    public function __construct(private MessageEvent $eventData)
+    public function __construct(private MessageEvent $eventData, private BotCommands $botCommands)
     {
         if ($this->isMessageForBot($eventData))
             $this->typeEvent = Event::TYPE_MESSAGE_FOR_BOT;
@@ -25,9 +26,9 @@ class Event
     {
         $text = $message->getText();
         if ($text) {
-            if (stripos($text, "/") !== false && stripos($text, ServerVK::$nameBotStatic) !== false) {
+            if (stripos($text, "/") !== false && (stripos($text, strtoupper(\BOT_NAME_VK_CONVERSATION)) !== false || stripos($text, strtolower(\BOT_NAME_VK_CONVERSATION)) !== false)) {
                 $command = substr($text, stripos($text, "/"));
-                if (in_array($command, BotCommands::$commandsName))
+                if (in_array($command, $this->botCommands->getCommandsName()))
                     return true;
                 else
                     return false;
@@ -40,9 +41,9 @@ class Event
     private function getCommand(string $text): ?string
     {
         $isCommand =  substr($text, stripos($text, "/"));
-        if (in_array($isCommand, BotCommands::$commandsName)) {
+        if (in_array($isCommand, $this->botCommands->getCommandsName())) {
             $fullCommand = false;
-            foreach (BotCommands::$commandsName as $command) {
+            foreach ($this->botCommands->getCommandsName() as $command) {
                 if ($command === $isCommand) {
                     $isCommand = $command;
                     $fullCommand = true;
@@ -66,15 +67,14 @@ class Event
 
     public function runEvent()
     {   
-        print_r($this->eventData);
         switch ($this->typeEvent) {
             case Event::TYPE_MESSAGE_FOR_BOT:
                 $command = $this->getCommand($this->eventData->getText());
                 if ($command)
-                    BotCommands::runBotCommand($this->eventData, $command);
+                    $this->botCommands->runBotCommand($this->eventData, $command);
                 break;
             case Event::TYPE_CHAT_EVENT:
-                BotCommands::runBotChatEvent($this->eventData);
+                $this->botCommands->runBotChatEvent($this->eventData);
                 break;
         }
     }

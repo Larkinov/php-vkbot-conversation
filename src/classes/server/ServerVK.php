@@ -18,16 +18,11 @@ class ServerVK
     // private string $mode = "2";
     // private string $version = "3";
 
-
-    static string $nameBotStatic;
-
     public function __construct(
-        string $storagePathCache,
-        string $filename,
-        private string $nameBot
+        string $filenameCache,
+        string $storagePathCache=""
     ) {
-        $this->data = new ServerData($storagePathCache, $filename);
-        self::$nameBotStatic = $nameBot;
+        $this->data = new ServerData($filenameCache,$storagePathCache);
     }
 
     public function connection()
@@ -109,6 +104,7 @@ class ServerVK
             if (isset($event['type'])) {
                 if ($event['type'] === "message_new") {
                     $m = $event['object']['message'];
+
                     if ($m['action'])
                         $a = new Action(strtoupper($m['action']['type']), $m['action']['member_id'], $m['action']['text']);
                     else

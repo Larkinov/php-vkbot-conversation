@@ -10,9 +10,10 @@ class ServerData extends DataModel
     private string $urlServer;
     private string $ts;
 
-    public function __construct(string $storagePath, string $filename)
+    public function __construct(string $filename, string $storagePathServer)
     {
-        parent::__construct($storagePath, $filename);
+        parent::__construct($storagePathServer,$filename);
+        $this->pathStorage .= $storagePathServer; 
 
         if ($this->hasData()) {
             $data = $this->getData();
