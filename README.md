@@ -18,7 +18,7 @@ define("BOT_NAME_VK_CONVERSATION","your_name_bot") - имя бота (ВНИМА
 define("ROOT_PATH_STORAGE_VK_CONVERSATION","your_root_path") - корневая папка где будет храниться сохраненная информация
 
 # example отправка сообщений
-
+```php
 require_once(__DIR__ . "/autoload.php");
 
 use vkbot_conversation\classes\bot\Bot;
@@ -44,10 +44,10 @@ foreach ($eventsData as $eventData) {
     $event = new Event($eventData, $bc);
     $event->runEvent();
 }
+```
 
-
-*вызов бота в ВКонтакте*
+**вызов бота в ВКонтакте**
 your_name_bot /your_command
 
-*сообщение бота*
+**сообщение бота**
 bot message
